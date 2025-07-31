@@ -1,0 +1,38 @@
+--一旦输入错误立即清空
+-- 创建输入框
+local inputField = EditText(activity)
+inputField.setHint("请输入2025bit卡密")
+inputField.setTextSize(16)
+inputField.setSingleLine(true)
+
+-- 创建弹窗
+local dialog = AlertDialog.Builder(activity)
+.setTitle("卡密验证")
+.setMessage("需要输入正确卡密才能继续使用")
+.setView(inputField)
+.setPositiveButton("验证", nil) -- 先设为nil后面覆盖
+.setCancelable(false) -- 禁止点击外部关闭
+.create()
+
+-- 覆盖按钮点击事件（防止自动关闭）
+dialog.setOnShowListener({
+    onShow = function()
+        local btn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        btn.setOnClickListener({
+            onClick = function(v)
+                local userInput = inputField.getText().toString()
+                if userInput == "2025bit" then
+                    dialog.dismiss() -- 验证成功关闭弹窗
+                else
+                    Toast.makeText(activity, "卡密错误！请重新输入", Toast.LENGTH_SHORT).show()
+                    inputField.setText("") -- 清空输入框
+                    inputField.requestFocus() -- 重新聚焦
+                end
+            end
+        })
+    end
+})
+
+-- 显示弹窗
+dialog.show()
+inputField.requestFocus() -- 立即聚焦输入框
