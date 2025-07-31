@@ -1,0 +1,35 @@
+local btnCopy = dialog.getButton(dialog.BUTTON_POSITIVE)
+btnCopy.setText("Copy Info")
+btnCopy.setOnClickListener(function()
+
+  local clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE)
+  local clip = import "android.content.ClipData".newPlainText("Device Info", deviceInfo)
+  clipboard.setPrimaryClip(clip)
+
+
+  import "android.widget.Toast"
+  Toast.makeText(activity, "Device info copied to clipboard!", Toast.LENGTH_SHORT).show()
+
+  dialog.dismiss()
+end)
+
+import "android.content.*"
+import "android.os.BatteryManager"
+
+
+local filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+local batteryStatus = activity.registerReceiver(nil, filter)
+
+
+local status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+local isCharging = (status == BatteryManager.BATTERY_STATUS_CHARGING)
+or (status == BatteryManager.BATTERY_STATUS_FULL)
+
+
+local prompt
+if isCharging then
+  prompt = "⚡ Phone is charging - Safe to proceed"
+ else
+  prompt = "🔋 Phone NOT charging - Connect charger first!"
+end
+提示(prompt) 
