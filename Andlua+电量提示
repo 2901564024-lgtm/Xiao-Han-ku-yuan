@@ -1,0 +1,97 @@
+import "android.content.*"
+import "android.widget.*"
+import "android.view.*"
+import "android.graphics.Typeface"
+
+require "import"
+import "res/init"
+import "android.content.*"
+import "android.widget.Toast"
+
+
+lastPercent = -1
+lastStatus = nil
+lastPlugged = nil
+
+CHARGING = 1
+FULL = 2
+UNPLUGGED = 3
+LOW_BATTERY = 4
+
+function showBatteryHint(message, hintType)
+  local toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT)
+  local view = toast.getView()
+
+
+  if hintType == CHARGING then
+    view.setBackgroundColor(0xFF4CAF50)  
+  elseif hintType == FULL then
+    view.setBackgroundColor(0xFF4CAF50)
+  elseif hintType == LOW_BATTERY then
+    view.setBackgroundColor(0xFFF44336)
+  else
+    view.setBackgroundColor(0xFFFF9800) 
+  end
+
+
+  local text = view.findViewById(android.R.id.message)
+  text.setTextColor(0xFFFFFFFF)  
+  text.setTextSize(18)
+  text.setPadding(40, 30, 40, 30)
+
+  toast.show()
+end
+
+function checkBattery()
+
+  local filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+  local battery = activity.registerReceiver(nil, filter)
+
+
+  local level = battery.getIntExtra("level", -1)
+  local scale = battery.getIntExtra("scale", -1)
+  local status = battery.getIntExtra("status", -1)
+  local plugged = battery.getIntExtra("plugged", -1)
+
+
+  local percent = math.floor(level * 100 / scale)
+
+
+  BATTERY_STATUS_CHARGING = 2
+  BATTERY_STATUS_FULL = 5
+  BATTERY_PLUGGED_AC = 1
+  BATTERY_PLUGGED_USB = 2
+
+
+  if status == BATTERY_STATUS_CHARGING and lastStatus ~= status then
+    local source = (plugged == BATTERY_PLUGGED_USB) and "USB" or "AC"
+    showBatteryHint("⚡ Charging ("..source..") - "..percent.."%", CHARGING)
+  elseif status == BATTERY_STATUS_FULL and lastStatus ~= status then
+    showBatteryHint("🈵 Fully Charged - 100%", FULL)
+  elseif plugged == 0 and lastPlugged ~= plugged then
+    showBatteryHint("🔋 Unplugged - "..percent.."%", UNPLUGGED)
+  elseif percent <= 20 and lastPercent > 20 then
+    showBatteryHint("🪫 Low Battery - "..percent.."%", LOW_BATTERY)
+  end
+
+
+  lastPercent = percent
+  lastStatus = status
+  lastPlugged = plugged
+end
+
+handler = Handler()
+runnable = Runnable({
+  run = function()
+    checkBattery()
+    handler.postDelayed(runnable, 5000)  
+  end
+})
+handler.postDelayed(runnable, 1000)  
+
+
+function onDestroy()
+  handler.removeCallbacks(runnable)
+end
+
+checkBattery()
