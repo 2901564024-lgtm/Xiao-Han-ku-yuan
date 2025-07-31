@@ -1,0 +1,20 @@
+--超级用户权限
+function 获取超级权限()
+os.execute("su")
+if Build.VERSION.SDK_INT >= Build.VERSION_CODES.M&&!Settings.canDrawOverlays(this) then
+intent=Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+intent.setData(Uri.parse("package:" .. activity.getPackageName()))
+activity.startActivityForResult(intent, 100)
+else
+信息提示("你已赋予悬浮窗权限了")
+end
+end
+--渐变颜色
+function 颜色渐变(控件,左色,右色)
+  import "android.graphics.drawable.GradientDrawable"
+  drawable = GradientDrawable(GradientDrawable.Orientation.TR_BL,{左色,右色,});
+  控件.setBackgroundDrawable(drawable)
+end
+
+
+颜色渐变(模版,0xFFF58F98,0xFF7BBFEA)
