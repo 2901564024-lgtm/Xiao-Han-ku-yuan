@@ -1,4 +1,4 @@
---超级用户权限
+--ROOT超级用户权限
 function 获取超级权限()
 os.execute("su")
 if Build.VERSION.SDK_INT >= Build.VERSION_CODES.M&&!Settings.canDrawOverlays(this) then
