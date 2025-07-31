@@ -1,0 +1,42 @@
+local import = import
+local Build = import "android.os.Build"
+local AlertDialogBuilder = import "android.app.AlertDialog$Builder"
+local Context = import "android.content.Context"
+
+
+local deviceModel = Build.MODEL
+local manufacturer = Build.MANUFACTURER
+local productName = Build.PRODUCT
+local brand = Build.BRAND
+local device = Build.DEVICE
+local board = Build.BOARD
+local hardware = Build.HARDWARE
+
+
+local deviceInfo = string.format([[
+Device Name: %s
+Manufacturer: %s
+Brand: %s
+Product: %s
+Device: %s
+Hardware: %s
+Board: %s
+Android Version: %s (SDK %d)]],
+deviceModel,
+manufacturer,
+brand,
+productName,
+device,
+hardware,
+board,
+Build.VERSION.RELEASE,
+Build.VERSION.SDK_INT)
+local builder = AlertDialogBuilder(activity)
+builder.setTitle("Device Information")
+.setMessage(deviceInfo)
+.setPositiveButton("OK", nil)
+.setIcon(activity.getResources().getIdentifier("ic_dialog_info", "drawable", activity.getPackageName()))
+.setCancelable(false)
+
+local dialog = builder.create()
+dialog.show()
