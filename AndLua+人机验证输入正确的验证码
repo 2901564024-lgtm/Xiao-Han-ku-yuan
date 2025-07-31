@@ -1,0 +1,147 @@
+import "android.text.InputType"
+import "android.graphics.drawable.GradientDrawable"
+import "android.graphics.Color"
+import "android.graphics.Typeface"
+import "android.text.style.UnderlineSpan"
+import "android.text.SpannableString"
+function generateCaptcha(length)
+  local chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghjklmnpqrstuvwxyz"
+  local code = ""
+  for i = 1, length do
+    local rand = math.random(1, #chars)
+    code = code .. string.sub(chars, rand, rand)
+  end
+  return code
+end
+
+
+function showCaptchaDialog()
+
+  local captchaCode = generateCaptcha(4)
+
+
+  local dialog = AlertDialog.Builder(activity)
+  dialog.setTitle("人机验证")
+
+
+  local layout = LinearLayout(activity)
+  layout.setOrientation(1)
+  layout.setPadding(40, 30, 40, 20)
+
+
+  local hint = TextView(activity)
+  hint.setText("请输入下方显示的验证码：")
+  hint.setTextSize(16)
+  hint.setTextColor(0xff444444)
+  layout.addView(hint)
+
+
+  local input = EditText(activity)
+  input.setHint("输入验证码")
+  input.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+  input.setTextSize(18)
+  input.setSingleLine(true)
+  input.setBackground(createEditTextBg())
+  input.setPadding(30, 25, 30, 25)
+  input.setHintTextColor(0xffaaaaaa)
+  layout.addView(input)
+
+
+  local captchaLayout = LinearLayout(activity)
+  captchaLayout.setOrientation(0)
+  captchaLayout.setGravity(Gravity.CENTER)
+  captchaLayout.setLayoutParams(LinearLayout.LayoutParams(
+  LinearLayout.LayoutParams.MATCH_PARENT,
+  LinearLayout.LayoutParams.WRAP_CONTENT
+  ))
+
+  local captchaText = TextView(activity)
+  captchaText.setText(captchaCode)
+  captchaText.setTextSize(24)
+  captchaText.setTextColor(0xff333333)
+  captchaText.setTypeface(Typeface.DEFAULT_BOLD)
+
+
+  local captchaBg = GradientDrawable()
+  captchaBg.setColor(0xfff5f5f5)
+  captchaBg.setCornerRadius(12)
+  captchaBg.setStroke(2, 0xffe0e0e0)
+
+  captchaText.setBackgroundDrawable(captchaBg)
+  captchaText.setPadding(60, 25, 60, 25)
+
+
+  local refreshText = TextView(activity)
+  refreshText.setText("刷新")
+  refreshText.setTextSize(16)
+
+
+  local content = SpannableString("刷新")
+  content.setSpan(UnderlineSpan(), 0, #content, 0)
+  refreshText.setText(content)
+
+  refreshText.setTextColor(0xff1e88e5)
+  refreshText.setPadding(30, 0, 10, 0)
+  refreshText.onClick = function()
+    captchaCode = generateCaptcha(4)
+    captchaText.setText(captchaCode)
+  end
+
+  captchaLayout.addView(captchaText)
+  captchaLayout.addView(refreshText)
+  layout.addView(captchaLayout)
+
+  dialog.setView(layout)
+
+
+  dialog.setPositiveButton("验证", nil)
+
+
+  local alert = dialog.create()
+  alert.show()
+
+
+  local btnPositive = alert.getButton(AlertDialog.BUTTON_POSITIVE)
+  local btnNegative = alert.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+
+  btnPositive.setTextSize(16)
+  btnPositive.setTextColor(0xff2196f3)
+  btnNegative.setTextSize(16)
+  btnNegative.setTextColor(0xff888888)
+
+
+  btnPositive.onClick = function(v)
+    local userInput = input.getText().toString()
+    if userInput == captchaCode then
+      Toast.makeText(activity, "验证成功", Toast.LENGTH_SHORT).show()
+      alert.dismiss()
+
+     else
+      Toast.makeText(activity, "验证码错误，请重新输入", Toast.LENGTH_SHORT).show()
+
+      captchaCode = generateCaptcha(4)
+      captchaText.setText(captchaCode)
+      input.setText("")
+
+    end
+  end
+
+
+  btnNegative.onClick = function(v)
+    alert.dismiss()
+  end
+end
+
+
+function createEditTextBg()
+  local shape = GradientDrawable()
+  shape.setShape(GradientDrawable.RECTANGLE)
+  shape.setCornerRadius(10)
+  shape.setColor(Color.WHITE)
+  shape.setStroke(2, 0xffe0e0e0)
+  return shape
+end
+
+
+showCaptchaDialog()
