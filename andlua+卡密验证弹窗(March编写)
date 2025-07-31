@@ -1,0 +1,53 @@
+require "import"
+import "android.app.*"
+import "android.os.*"
+import "android.widget.*"
+
+
+local dialog = AlertDialog.Builder(activity)
+dialog.setTitle("卡密验证")
+dialog.setMessage("请输入2025bit解锁应用")
+
+
+local input = EditText(activity)
+input.setHint("在此输入卡密")
+input.setInputType(0x00000001) 
+dialog.setView(input)
+
+
+local listener = {
+    onClick = function(dialog, which)
+        
+        activity.finish()  
+    end
+}
+
+dialog.setNegativeButton("取消", listener)
+dialog.setPositiveButton("退出", nil)  -- 先设为nil
+
+local ad = dialog.show()
+ad.setCancelable(false) 
+
+local btn = ad.getButton(AlertDialog.BUTTON_POSITIVE)
+btn.onClick = function()
+    local key = tostring(input.getText())
+    if key == "2025bit" then
+        ad.dismiss()  
+        Toast.makeText(activity, "验证成功！", Toast.LENGTH_SHORT).show()
+    else
+        input.setText("") 
+        Toast.makeText(activity, "卡密错误，请重新输入", Toast.LENGTH_SHORT).show()
+    end
+end
+
+local layout = LinearLayout(activity)
+layout.setOrientation(LinearLayout.VERTICAL)
+layout.setLayoutParams(LinearLayout.LayoutParams(-1, -1))
+
+local tv = TextView(activity)
+tv.setText("应用主界面")
+tv.setTextSize(20)
+tv.setGravity(Gravity.CENTER)
+layout.addView(tv)
+
+activity.setContentView(layout)
