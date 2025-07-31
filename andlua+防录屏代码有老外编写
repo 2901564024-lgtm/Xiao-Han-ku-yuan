@@ -1,0 +1,138 @@
+ local import = import
+  local WindowManager = import "android.view.WindowManager"
+  local PreferenceManager = import "android.preference.PreferenceManager"
+  local Color = import "android.graphics.Color"
+
+
+  local layout = {
+    LinearLayout,
+    layout_width = "fill",
+    layout_height = "fill",
+    orientation = 1,
+    padding = "16dp",
+    background = "#ffffff",
+    {
+      Switch,
+      id = "switchAntiRecord",
+      layout_width = "fill",
+      layout_height = "wrap",
+      text = "Enable Anti-Recording Protection",
+      textSize = "18sp",
+      textColor = "#333333",
+      padding = "16dp"
+    },
+    {
+      TextView,
+      layout_width = "fill",
+      layout_height = "wrap",
+      text = "This feature prevents screen recording and capture",
+      textSize = "14sp",
+      textColor = "#666666",
+      id = "switchAntiRecod",
+      padding = "8dp"
+    }
+  }
+
+
+  activity.setContentView(loadlayout(layout))
+
+
+  local prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+
+
+  function updateWindowFlags(enable)
+    local window = activity.getWindow()
+    if enable then
+
+      window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+     else
+
+      window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    end
+  end
+
+
+  local savedSetting = prefs.getBoolean("anti_recording", false)
+  switchAntiRecord.setChecked(savedSetting)
+  updateWindowFlags(savedSetting)
+
+
+  switchAntiRecord.setOnCheckedChangeListener{
+    onCheckedChanged = function(_, isChecked)
+
+      updateWindowFlags(isChecked)
+
+
+      local editor = prefs.edit()
+      editor.putBoolean("anti_recording", isChecked)
+      editor.apply()
+
+
+      local message = isChecked and
+      "🛡️ Anti-recording enabled" or
+      "❌ Anti-recording disabled"
+
+      Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+    end
+  }
+
+
+  if switchAntiRecord.isChecked() then
+    Toast.makeText(activity, "Anti-recording is active", Toast.LENGTH_SHORT).show()
+  end
+  local Switch = luajava.bindClass "android.widget.Switch"
+  function 设置开关(_switch, colorAccent)
+
+    local ColorStateList = luajava.bindClass "android.content.res.ColorStateList"
+    local RippleDrawable = luajava.bindClass "android.graphics.drawable.RippleDrawable"
+    local GradientDrawable = luajava.bindClass "android.graphics.drawable.GradientDrawable"
+    local TypedValue = luajava.bindClass "android.util.TypedValue"
+    local function blendARGB(color1, color2, ratio)
+      local inverseRatio = 1 - ratio
+      local components = {}
+      for shift = 24, 0, -8 do
+        local component1 = (color1 >> shift) & 255
+        local component2 = (color2 >> shift) & 255
+        local component = tointeger((component1 * inverseRatio) + (component2 * ratio))
+        components[#components + 1] = (component & 255) << shift
+      end
+      return components[1] + components[2] + components[3] + components[4]
+    end
+
+    local attrs = {android.R.attr.colorBackground}
+    local typedArray = activity.obtainStyledAttributes(attrs)
+    local colorBackground = typedArray.getColor(0, 0)
+    typedArray.recycle()
+    local colorOnBackground = blendARGB(math.abs(0 - colorBackground), colorBackground, 0.64)
+
+    local ThumbList = ColorStateList({
+      {-android.R.attr.state_enabled},
+      {-android.R.attr.state_checked},
+      { android.R.attr.state_checked}
+    },
+    {
+      blendARGB(colorOnBackground, colorBackground, 0.84),
+      colorBackground,
+      colorBackground
+    })
+    local TrackList = ColorStateList({
+      {-android.R.attr.state_enabled},
+      {-android.R.attr.state_checked},
+      { android.R.attr.state_checked}
+    },
+    {
+      blendARGB(colorOnBackground, colorBackground, 0.48),
+      colorOnBackground,
+      colorAccent
+    })
+    local drawable = GradientDrawable().setShape(GradientDrawable.RECTANGLE)
+    .setCornerRadius(TypedValue.applyDimension(1,32,activity.resources.displayMetrics))
+    .setTintList(TrackList)
+    _switch.setBackground(drawable)
+    .setThumbTintList(ThumbList)
+    .setTrackTintList(TrackList)
+    return _switch
+  end
+
+
+  设置开关(switchAntiRecord,0xFF00FF00)
