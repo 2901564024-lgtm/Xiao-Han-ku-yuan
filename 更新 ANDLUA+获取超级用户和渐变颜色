@@ -16,5 +16,5 @@ function 颜色渐变(控件,左色,右色)
   控件.setBackgroundDrawable(drawable)
 end
 
-
+--c
 颜色渐变(模版,0xFFF58F98,0xFF7BBFEA)
