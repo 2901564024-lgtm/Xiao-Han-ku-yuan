@@ -1,0 +1,92 @@
+import "android.graphics.drawable.GradientDrawable"
+import "android.graphics.Color"
+import "android.text.InputType"
+import "android.text.SpannableString"
+import "android.text.style.UnderlineSpan"
+import "android.graphics.Typeface"
+
+import "android.graphics.drawable.GradientDrawable"
+import "android.graphics.Color"
+import "android.text.InputType"
+import "android.text.SpannableString"
+import "android.text.style.UnderlineSpan"
+import "android.view.View"
+
+local import = import
+local Context = import "android.content.Context"
+local AlertDialogBuilder = import "android.app.AlertDialog$Builder"
+local EditText = import "android.widget.EditText"
+local LinearLayout = import "android.widget.LinearLayout"
+local Toast = import "android.widget.Toast"
+
+
+function showVerification()
+
+  local builder = AlertDialogBuilder(this)
+
+
+  builder.setTitle("1.人机验证,你是不是人机")
+  .setMessage("请解决这道数学题,然后继续,答不对的就别开了")
+  .setCancelable(false)
+
+
+  local layout = LinearLayout(this)
+  layout.setOrientation(1)
+  layout.setPadding(50, 30, 50, 30)
+
+
+  local num1 = math.random(1, 10)
+  local num2 = math.random(1, 10)
+
+  local correctAnswer = num1 * num2
+  local problemText = string.format("%d × %d = ?", num1, num2)
+
+  local tvProblem = TextView(this)
+  tvProblem.setText(problemText)
+  tvProblem.setTextSize(18)
+  tvProblem.setGravity(1)
+  layout.addView(tvProblem)
+
+
+  local etAnswer = EditText(this)
+  etAnswer.setHint("输入答案")
+  etAnswer.setInputType(2)
+  etAnswer.setTextSize(18)
+  etAnswer.setGravity(1)
+  layout.addView(etAnswer)
+
+
+  builder.setView(layout)
+
+
+  builder.setPositiveButton("确定", {
+    onClick = function()
+
+      local userAnswer = tonumber(tostring(etAnswer.getText()))
+
+
+      if userAnswer == correctAnswer then
+        Toast.makeText(this, "验证成功！", Toast.LENGTH_SHORT).show()
+
+       else
+        Toast.makeText(this, "回答不正确！请再试一次。", Toast.LENGTH_SHORT).show()
+        showVerification()
+      end
+    end
+  })
+
+
+  builder.setNegativeButton("退出", {
+    onClick = function()
+
+      activity.finish()
+    end
+  })
+
+
+  local dialog = builder.create()
+  dialog.show()
+end
+
+
+showVerification()
