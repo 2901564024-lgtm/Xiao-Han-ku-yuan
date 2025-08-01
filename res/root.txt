@@ -1,0 +1,1 @@
+关于 Android手机Root权限获取与管理，以下是当前（2025年8月）最权威、实用的整理总结：✅ Root是什么？Root即获取Android系统的最高权限（超级用户权限），相当于Windows的“管理员”。Root后可：删除系统预装软件安装Xposed模块、Magisk模块刷入第三方ROM（如LineageOS）实现自动化脚本、性能优化等
