@@ -1,0 +1,36 @@
+local socket = require("socket")
+
+-- 服务器配置
+local host = "127.0.0.1"  -- 服务器 IP
+local port = 8080         -- 服务器端口
+
+-- 创建 TCP 客户端
+local client = socket.tcp()
+client:settimeout(5)  -- 设置超时时间（秒）
+
+-- 连接服务器
+local ok, err = client:connect(host, port)
+if not ok then
+    print("连接失败: " .. err)
+    return
+end
+print("成功连接到服务器!")
+
+-- 发送数据
+local data_send = "Hello Server!"
+client:send(data_send .. "\n")  -- 注意：服务器通常按行读取
+
+-- 接收响应
+local response, err = client:receive("*l")  -- 读取一行
+if response then
+    print("收到响应: " .. response)
+else
+    print("接收错误: " .. (err or "未知"))
+end
+local udp = socket.udp()
+udp:setpeername(host, port)  -- 设置目标
+udp:send("UDP Hello!")
+local data = udp:receive()
+udp:close()
+-- 关闭连接
+client:close()
