@@ -1,0 +1,115 @@
+require "import"
+import "android.app.*"
+import "android.os.*"
+import "android.widget.*"
+import "android.view.*"
+import "android.graphics.drawable.*"
+
+-- 创建公告弹窗
+function showNoticeDialog()
+  -- 弹窗布局
+  local dialogLayout = {
+    LinearLayout,
+    orientation = "vertical",
+    padding = "16dp",
+    layout_width = "fill",
+    {
+      TextView,
+      text = "XC",
+      textSize = "20sp",
+      textColor = "#333333",
+      gravity = "center",
+      id = "tvTitle",
+      paddingBottom = "16dp"
+    },
+    {
+      FrameLayout,
+      layout_width = "fill",
+      layout_height = "200dp",
+      {
+        ProgressBar,
+        layout_gravity = "center",
+        id = "progressBar",
+        style = "?android:attr/progressBarStyleLarge"
+      },
+      {
+        ScrollView,
+        layout_width = "fill",
+        layout_height = "fill",
+        id = "scrollView",
+        visibility = "gone",
+        {
+          TextView,
+          textSize = "16sp",
+          textColor = "#555555",
+          id = "tvContent",
+          padding = "8dp"
+        }
+      }
+    },
+    {
+      Button,
+      text = "确定",
+      layout_width = "fill",
+      layout_marginTop = "16dp",
+      background = "#4CAF50",
+      textColor = "#FFFFFF",
+      id = "btnOk"
+    }
+  }
+  
+  -- 创建弹窗
+  local dialog = AlertDialog.Builder(activity)
+  dialog.setView(loadlayout(dialogLayout))
+  dialog = dialog.show()
+  
+  -- 设置窗口属性
+  local window = dialog.getWindow()
+  window.setBackgroundDrawable(ColorDrawable(0xFFFFFFFF))
+  window.setDimAmount(0.5)
+  
+  -- 设置弹窗大小
+  window.setLayout(activity.getWidth() * 0.9, ViewGroup.LayoutParams.WRAP_CONTENT)
+  
+  -- 初始状态：显示加载动画，隐藏内容
+  progressBar.setVisibility(View.VISIBLE)
+  scrollView.setVisibility(View.GONE)
+  
+  -- 模拟加载过程
+  local handler = Handler()
+  handler.postDelayed(Runnable({
+    run = function()
+      -- 加载完成，隐藏加载动画，显示内容
+      progressBar.setVisibility(View.GONE)
+      scrollView.setVisibility(View.VISIBLE)
+      
+      -- 设置公告内容
+      tvContent.setText([[
+尊敬的Zero冰雪绘制用户：
+
+我们很高兴地宣布，新版本的应用已经上线！本次更新包含以下重要改进：
+
+1. 性能优化：应用启动速度提升30%
+2. 全新界面：更简洁直观的设计风格
+3. 增强安全：新增双重验证功能
+4. 通知系统：更智能的消息推送机制
+5. 新增功能：夜间模式，保护您的眼睛
+6. 错误修复：解决了10个已知问题
+
+感谢您一直以来的支持！我们将继续努力为您提供更好的服务。
+
+萧函
+2025年6月7日
+]])
+    end
+  }), 1500) -- 1.5秒后加载完成
+  
+  -- 确定按钮点击事件
+  btnOk.onClick = function()
+    dialog.dismiss()
+  end
+end
+
+-- 直接显示公告弹窗
+showNoticeDialog()
+
