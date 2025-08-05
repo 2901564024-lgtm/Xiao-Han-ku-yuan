@@ -5,7 +5,7 @@ import "android.widget.*"
 import "android.view.*"
 import "android.graphics.drawable.*"
 
--- 创建公告弹窗
+-- 创建公告弹窗 
 function showNoticeDialog()
   -- 弹窗布局
   local dialogLayout = {
