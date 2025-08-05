@@ -1,0 +1,18 @@
+{
+  LinearLayout;
+  layout_width="fill";
+  layout_height="fill";
+  {
+    AbsoluteLayout;
+    layout_width="50dp";
+    layout_height="50dp";
+    {
+      ImageView;
+      layout_width="match_parent";
+      id="图标";
+      onClick="放大";
+      layout_height="match_parent";
+      src="icon.png";
+    };
+  };
+};
