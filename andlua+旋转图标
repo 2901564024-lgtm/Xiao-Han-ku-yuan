@@ -1,0 +1,19 @@
+import "android.animation.ObjectAnimator"---旋转函数
+import "android.animation.ValueAnimator"---旋转函数
+
+----初始化
+function 流畅旋转(控件,频率,顺时针,逆时针)
+  import "android.view.animation.LinearInterpolator"
+  c = ObjectAnimator()
+  c.setTarget(控件)
+  c.setDuration(频率)
+  c.setRepeatCount(ValueAnimator.INFINITE)
+  c.setPropertyName("rotation")
+  c.setFloatValues({顺时针,逆时针})
+  c.setRepeatMode(ValueAnimator.INFINITE)
+  c.setInterpolator(LinearInterpolator())
+  c.start()
+end
+
+----还要弄复制下面的代码
+流畅旋转(模版,7500,720,0)
