@@ -1,0 +1,34 @@
+--名称
+appname="悬浮窗模版"
+--版本号
+appver="1.0"
+--版本
+appcode="1"
+--SDK
+appsdk="15"
+--包名
+packagename="com.shenshang.moban1"
+--调试模式
+debugmode=true
+--应用权限
+user_permission={
+  "ACCESS_NETWORK_STATE",
+  "ACCESS_WIFI_STATE",
+  "BATTERY_STATS",
+  "BIND_ACCESSIBILITY_SERVICE",
+  "CLEAR_APP_CACHE",
+  "FOREGROUND_SERVICE",
+  "INTERNET",
+  "READ_FRAME_BUFFER",
+  "READ_LOGS",
+  "SET_WALLPAPER",
+  "SYSTEM_ALERT_WINDOW",
+  "UNKNOWN",
+  "VIBRATE",
+  "WRITE_EXTERNAL_STORAGE",
+  "WRITE_SETTINGS",
+}
+--跳过编译
+skip_compilation={
+
+}
