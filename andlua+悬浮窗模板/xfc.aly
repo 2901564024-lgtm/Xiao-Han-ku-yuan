@@ -1,0 +1,23 @@
+{
+  LinearLayout;
+  layout_width="fill";
+  layout_height="fill";
+  {
+    AbsoluteLayout;
+    layout_height="100dp";
+    backgroundColor="0xFF3CDA84";
+    layout_width="100dp";
+    {
+      Button;
+      text="退出";
+      id="退出";
+    };
+    {
+      Button;
+      text="隐藏";
+      id="隐藏";
+      layout_x="0dp";
+      layout_y="47dp";
+    };
+  };
+};
