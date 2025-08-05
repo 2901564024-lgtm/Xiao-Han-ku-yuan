@@ -1,0 +1,19 @@
+{
+  LinearLayout;
+  layout_width="fill";
+  layout_height="fill";
+  orientation="vertical";
+  {
+    AbsoluteLayout;
+    layout_width="match_parent";
+    layout_height="match_parent";
+    backgroundColor="0xFFE620FF";
+    {
+      Button;
+      layout_y="383dp";
+      text="悬浮窗测试";
+      layout_x="163dp";
+      id="开启";
+    };
+  };
+};
